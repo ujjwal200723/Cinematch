@@ -1,0 +1,446 @@
+@import "tailwindcss";
+
+/* Keyframe animations for MorphOrb */
+@keyframes mo-spin {
+  to {
+    --angle: 360deg;
+  }
+}
+
+@keyframes mo-drift {
+  from {
+    transform: translateX(-14%);
+  }
+  to {
+    transform: translateX(14%);
+  }
+}
+
+@keyframes mo-shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@keyframes mo-dot {
+  0%, 80%, 100% {
+    opacity: .25;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+@keyframes mo-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes mo-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes mo-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes mo-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes mo-shake {
+  0%, 100% {
+    transform: translate(-50%, -50%);
+  }
+  25% {
+    transform: translate(calc(-50% - 4px), -50%);
+  }
+  75% {
+    transform: translate(calc(-50% + 4px), -50%);
+  }
+}
+
+/* MorphOrb Root & Styling */
+.mo-root {
+  --oCenter: 0;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.mo-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mo-halo {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  width: 320px;
+  height: 320px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(140, 100, 255, 0.25) 0%, rgba(90, 40, 220, 0.08) 50%, transparent 70%);
+  opacity: var(--oCenter, 0);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.mo-mover {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  transform: translate3d(0, 0, 0);
+  pointer-events: auto;
+}
+
+.mo-trail {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(160, 120, 255, 0.3) 0%, transparent 70%);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.mo-actor {
+  --w: 560px;
+  --h: 60px;
+  --r: 999px;
+  --oGlow: 1;
+  --oHalo: 0;
+  --oPill: 1;
+  --oBall: 0;
+  --oGreen: 0;
+  --oCard: 0;
+  --oRing: 1;
+  --oInput: 1;
+  --inScale: 1;
+  --oAur: 1;
+  --gs: 0.55;
+  --cs: 1;
+  --hOp: 0;
+  --dotS: 0;
+  --bloom: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--w);
+  height: var(--h);
+  border-radius: var(--r);
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mo-actor[data-shake] {
+  animation: mo-shake 0.26s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+.mo-underglow {
+  position: absolute;
+  inset: -8px;
+  border-radius: inherit;
+  background: radial-gradient(circle, rgba(120, 80, 255, 0.35) 0%, transparent 75%);
+  opacity: var(--oGlow);
+  pointer-events: none;
+}
+
+.mo-surface {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(18, 14, 38, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  opacity: var(--oPill);
+  overflow: hidden;
+}
+
+.mo-aurora {
+  position: absolute;
+  inset: 0;
+  opacity: var(--oAur);
+  pointer-events: none;
+}
+
+.mo-aurora i {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(18px);
+}
+.mo-aurora i:nth-child(1) {
+  top: -20%; left: 10%; width: 50%; height: 140%;
+  background: rgba(130, 80, 255, 0.2);
+}
+.mo-aurora i:nth-child(2) {
+  top: -20%; right: 10%; width: 50%; height: 140%;
+  background: rgba(242, 184, 192, 0.18);
+}
+
+.mo-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  opacity: var(--oRing);
+  pointer-events: none;
+}
+
+.mo-ball {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle, #fff 0%, #b898ff 60%, #4a20a0 100%);
+  opacity: var(--oBall);
+  pointer-events: none;
+}
+
+.mo-green {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle, #702C43 0%, #242124 100%);
+  opacity: var(--oGreen);
+  transform: scale(var(--gs));
+  pointer-events: none;
+}
+
+.mo-card {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(20, 16, 40, 0.95);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  opacity: var(--oCard);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+
+.mo-input {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  opacity: var(--oInput);
+  transform: scale(var(--inScale));
+  z-index: 2;
+}
+
+.mo-spark {
+  width: 20px;
+  height: 20px;
+  color: #F2B8C0;
+  flex-shrink: 0;
+}
+
+.mo-field {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 15px;
+  font-family: inherit;
+}
+.mo-field::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.mo-send {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  transition: background 0.2s, transform 0.2s;
+  flex-shrink: 0;
+}
+.mo-send[data-ready] {
+  background: #F2B8C0;
+  color: #180F3C;
+  transform: scale(1.05);
+}
+.mo-send svg {
+  width: 18px;
+  height: 18px;
+}
+
+.mo-orb {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 220px;
+  height: 220px;
+  pointer-events: none;
+}
+
+.mo-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 140px;
+  height: 140px;
+  margin-top: -70px;
+  margin-left: -70px;
+  border-radius: 50%;
+  border: 2px solid #F2B8C0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mo-answer {
+  position: absolute;
+  inset: 0;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #fff;
+  opacity: var(--hOp);
+  outline: none;
+  z-index: 3;
+}
+.mo-a-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #F2B8C0;
+  margin-bottom: 6px;
+}
+.mo-a-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #F2B8C0;
+  transform: scale(var(--dotS));
+}
+.mo-a-body {
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.9);
+}
+.mo-w {
+  display: inline-block;
+}
+
+.mo-status {
+  --sOp: 0;
+  --sTy: 6px;
+  position: absolute;
+  top: calc(46% + 90px);
+  left: 50%;
+  transform: translate(-50%, var(--sTy));
+  opacity: var(--sOp);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+.mo-lab {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.mo-dots i {
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  margin: 0 1px;
+  animation: mo-dot 1.2s infinite;
+}
+.mo-dots i:nth-child(2) { animation-delay: 0.2s; }
+.mo-dots i:nth-child(3) { animation-delay: 0.4s; }
+
+.mo-reset {
+  position: absolute;
+  top: calc(46% + 90px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 12px;
+  cursor: pointer;
+  display: none;
+}
+.mo-root[data-phase="answered"] .mo-reset {
+  display: block;
+}
+
+.mo-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  clip: rect(0, 0, 0, 0);
+  overflow: hidden;
+}
+
+.mo-debug {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  color: #aaa;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
